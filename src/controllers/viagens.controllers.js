@@ -34,3 +34,25 @@ export async function getInfoViagens(req, res){
         res.status(500).send(err.message)
     }
 }
+
+
+export async function buyticket(req, res){
+    const { id } = req.params
+
+    const dia = await db.query(`SELECT * FROM dias WHERE id=$1;`, [id])
+    const viagem = await db.query(`SELECT * FROM viagens WHERE id=$1;`, [dia.rows[0].viagemId])
+    
+    const object ={
+        partida: dia.rows[0].local,
+        destino: viagem.rows[0].name,
+        data: dia.rows[0].date,
+        hora: dia.rows[0].hour,
+        experiencia: viagem.rows[0].experience
+    }
+
+    try{
+        res.status(200).send(object)
+    }catch(err){
+        res.status(500).send(err.message)
+    }
+}
